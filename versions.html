@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TeaTime 茶飲訂購系統 會員註冊</title>
+<link href="css/common.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="js/jquery.cookie.js" type="text/javascript"></script>
+<script src="js/common.js" type="text/javascript"></script>
+<style>
+.profiletb td{ border:solid 1px #999999;}
+.vertext{text-align:left;}
+</style>
+</head>
+<body>
+<div id="topdiv"><div style="width:385px;"><img src="images/version_03.jpg" width="385" height="220" alt=""></div><div style="width:385px;  position:relative; left:385px; top:-220px;"><img src="images/version_04.jpg" width="385" height="220" alt=""></div></div>
+<div id="leftdiv"><div style="width:50px; height:149px; "><img src="images/sub01_01.jpg" width="250" height="149" id="getT" /></div>
+<div id="newsdiv"><img src="images/title_version.gif" width="432" height="44" alt="" /></div>
+<div id="rightdiv">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="47" valign="top" background="images/sub01_19.gif"><img src="images/sub01_07-08.gif" width="47" height="28" alt="" /></td>
+      <td valign="top" style="background-image:url(images/sub01_09.gif); background-position:top;">&nbsp;</td>
+      <td width="24" height="28" valign="top" background="images/sub01_14.gif"><img src="images/sub01_10.gif" width="24" height="28" alt="" /></td>
+    </tr>
+    <tr>
+      <td valign="top" background="images/sub01_19.gif"><img src="images/sub01_09-13.gif" width="47" height="121" alt="" /></td>
+      <td align="center" valign="top">
+  <table border="0px" style="font-size:12px" width="630px" class="profiletb">
+  <tr bgcolor="#999999"> 
+    <th>版本</th>
+    <th>變更描述</th>
+    <th>作者</th>
+    <th>時間</th>
+    </tr>
+     <tr>
+    <td>v2.3</td>
+    <td class="vertext">1.會員帳號結合公司AD網域認功能(區域性)<br />2.發起邀約時受邀人可選群組或個人<br />3.修正Firefox使用easy-ui時，無法傳送表單之錯誤<br />4.增加驗証用戶圖片是否存在遠端主機功能</td>
+    <td>螢火蟲</td>
+    <td>2013-04-26</td>
+  </tr></tr>
+     <tr>
+    <td>v2.2</td>
+    <td class="vertext">1.會員帳號結合社群功能(區域性)</td>
+    <td>螢火蟲</td>
+    <td>2012-02-04</td>
+  </tr><tr>
+    <td>v2.1</td>
+    <td class="vertext">1.新增發起邀約之周期循環功能<br />
+      2.邀約選單顯示結束日期<br />
+      3.修改周期循環對應的寄件方式<br />
+      4.新增非會員之選單，重寄認証信<br />
+      5.新增會員專區，訂單維護<br />
+      6.修改商品維護的文字敘述<br />
+      7.菜單換位及更名<br />
+      8.新增商家建立者，編輯與刪除商品類別功能<br />
+      9.修正週期選單與頁面重新整理互相抵觸問題<br />
+      10.修正訂購選單不同用戶相同匿稱的問題<br />
+      11.開放訂購選項修改<br />
+      12.修正寄送Excel附件內容金額不符<br />
+      13.修正店家未選縣市鄉鎮時造成搜尋不到的問題<br />
+      14.修改大量上傳之錯誤訊息顯示<br />
+      15.新增悄悄訂功能</td>
+    <td>螢火蟲</td>
+    <td>2011-12-16</td>
+  </tr>
+  <tr>
+    <td>v2.0 Beta 3</td>
+    <td class="vertext">1.增加首頁版本延革<br />
+      2.新增個人訂購記錄之單價、總數及費用<br />
+    3.更換店家圖示<br />
+    4.
+    修正前、後台列表選頁顯示<br />
+    5.修正訂單寄件程式<br />
+    6.更換各項功能標題項目<br />
+    7.增加首頁版本宣告<br />
+    8.刪除錯誤商品類別<br />
+    9.轉換資料庫中之商品「大小」、「輕重」、「多少」及其對應單價<br />
+    10.修正某訂單無人訂購時，寄信發生的錯誤<br />
+    11.修正會員專區的檢視訂單<br />
+    12.加強過期訂單被重訂之可能性<br />
+    13.修改後台無法列表刪除問題<br />
+    14.新增會員專區分店複製、商品下載功能</td>
+    <td>螢火蟲</td>
+    <td>2011-12-06</td>
+  </tr>
+  <tr>
+    <td>v2.0 Beta 2</td>
+    <td class="vertext">1.設定自動寄件功能<br />
+      2.修正訂單寄件文字內容及格式<br />
+      3.修正註冊認證網址<br />
+      4.下午茶系統定名為「下午茶訂購系統」(iTeaTime)<br />
+      5.新增Excel匯出訂單功能<br />
+      6.修正匯入功能自動判別店家及商品是否已存在<br />
+      7.轉換Excel編碼系統為UTF-8</td>
+    <td>螢火蟲</td>
+    <td>2011-09-18</td>
+  </tr>
+  <tr>
+    <td>v2.0 Beta 1</td>
+    <td class="vertext">1.下午茶系統全面大改版<br />
+      2.新增店家Google地圖搜尋<br />
+      3.註冊會員新增「最愛店家」<br />
+      4.修改商品排行之標題及內容顯示<br />
+      5.新增註冊會員專屬功能表<br />
+      6.新增後台管理功能<br />
+      7.新增商品圖片<br />
+      8.新增按「讚、普通、爛」功能<br />
+      9.新增訂購總數及費用<br />
+      10.新增Excel匯入店家、類別、商品功能<br />
+      11.修改滑鼠移入商品或店家的提示內容<br />
+      12.新增註冊會員Email認證功能</td>
+    <td>螢火蟲</td>
+    <td>2011-06-23</td>
+  </tr>
+  <tr>
+    <td>v1.1</td>
+    <td  class="vertext">1.新增商家、類別上傳、下載<br />
+      2.訂單資料匯出成CSV檔<br />
+      3.訂購選單店家顯示</td>
+    <td>螢火蟲</td>
+    <td>2010-05-03</td>
+  </tr><tr>
+    <td>v1.0</td>
+    <td  class="vertext">1.下午茶系統初試啼聲<br />
+      2.註冊會員新增「編輯個資」<br />
+      3.新增店家資料修改功能<br />
+      4.新增匯入資料範例檔<br />
+      5.修正商品維護之類別內容顯示</td>
+    <td>螢火蟲</td>
+    <td>2010-04-18</td>
+  </tr>
+  </table></td>
+      <td background="images/sub01_14.gif">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="47" height="21" valign="bottom" background="images/sub01_19.gif"><img src="images/sub01_22.gif" width="47" height="21" alt="" /></td>
+      <td valign="bottom" background="images/sub01_24.gif">&nbsp;</td>
+      <td width="24" height="21" valign="bottom" background="images/sub01_14.gif"><img src="images/sub01_25.gif" width="24" height="21" alt="" /></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

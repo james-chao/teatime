@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TeaTime 茶飲訂購系統 商品維護</title>
+<link href="css/common.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/easyui.css">
+<link rel="stylesheet" type="text/css" href="css/icon.css">
+<link rel="stylesheet" href="css/jquery.tooltip.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="js/jquery.easyui.min.js" type="text/javascript"></script>
+<script src="js/easyui-lang-zh_TW.js" type="text/javascript"></script>
+<script src="js/common.js" type="text/javascript"></script>
+<script src="js/jquery.cookie.js" type="text/javascript"></script>
+<script src="js/jquery.tooltip.js" type="text/javascript"></script>
+<script src="js/jquery.upload-1.0.2.js" type="text/javascript"></script>
+<script type="text/javascript">
+var theobj;
+
+$(function(){
+	var gSno=0;
+	var gCno=0;
+	$('#tabsdiv').tabs();
+	//$('#importtabs').tabs();
+	$.post("searchstore.php",{srchtxt:""}, function(sdata){$('#thestores').html(sdata);});
+
+	$('#searchbtn').click(function(){
+		var searchtxt=$('#searchtxt').val();
+		$.post("searchstore.php",{srchtxt:searchtxt}, function(sdata){$('#thestores').html(sdata);});
+	});
+	
+	$("#addpddata a[title=pdl]").tooltip({bodyHandler:function(){ return $('#addprodlist').html();},showURL: false});
+	
+	$('a[iconCls="icon-ok"]').click(function(){
+			var divid=$(theobj).parent().attr('subid'); 
+			var ct=1;
+			var v = "";
+			//var s = "";
+			var cnt = $('#'+divid+' input:checked').length;
+			$('#'+divid+' input:checked').each(function(){
+				v +=$(this).val();
+				//s +=$(this).next('span').text();
+				if(ct<cnt)
+				{
+					v +="-";
+					//s +=",";
+				}
+				ct++;
+				
+			}).attr('checked',false); 
+			
+			//deal text value
+			var getTxt=$('#'+divid+' :text').val();
+			if(getTxt!="" && v!="") getTxt = "-"+getTxt;
+	
+			theobj.value=v+getTxt;
+			
+			$('#'+divid).window('close');
+	});
+	
+	$('a[iconCls="icon-cancel"]').click(function(){$('.easyui-window').window('close');});
+	
+	$('.tabs-inner[subid="tab4"]').click(function(){
+		var sno=$('#thestores input:checked').val(); //the checked radio box
+		if(sno=="" || sno==undefined) {
+			alert('請先選擇店家');
+			return false;
+		}
+		else
+			$('.sno input[checked="true"]').click();
+	});
+	$('.tabs-inner[subid="tab5"]').click(function(){
+		var cno=$('#thecates input[@name="cno[]"]:checked').val(); //the checked radio box
+		if(cno=="" || cno==undefined)
+		{
+			alert('請先選擇類別');
+			return false;
+		}
+		else //load products of specified cate
+		{
+			var m=0;
+			$('#addproditem input').each(function(){m++;});
+			var sno=$('#thestores input[@name=sno[]]:checked').val();
+			if(m==9 || gSno!=sno || gCno!=cno){ //if change to new sno,cno
+				gSno=sno;
+				gCno=cno;
+				$.post("getproddata.php",{sno:sno,cno:cno},function(data){$('#newProdZone').html(data);})
+			}
+		}
+	});
+	$('.tabs-inner[subid="tab6"]').click(function(){
+		$('#previewtab').html('');
+		var k=0;
+		var pbody="";
+		var err=0;
+		$('#addproditem input').each(function(){
+			
+			if(k%9==0) pbody +="<tr>";	
+			if(k%9!=0){ //the first is hidden input
+				var x =$(this).val();
+				if((k%9)<4 && x=="") err++; //the previous 4 items (and 1 hidden pno) checking
+				if(x=="") x="&nbsp;";
+				pbody +="<td>"+x+"</td>";
+				if(k%9==8) pbody +="</tr>";
+			}
+			k++;
+		});
+		if(k==8) {alert('請新增商品');return false;}
+		var phead="<table border='0' cellspacing='1' cellpadding='1' width='99%' class='newpdtd'><thead id='newpdtb'><tr><th>品名</th><th>單位</th><th>售價</th><th>冷熱</th><th>甜淡</th><th>圖片上傳</th><th>商品說明</th><th>特殊功效</th></tr></thead><tbody>";
+		var pbottom="</tbody></table><p><input type='submit' name='savebutton' id='savebutton' value='送出儲存' style='height:30pt; width:50pt;' /></p>";
+		$('#previewtab').append(phead+pbody+pbottom);
+		if(err>0) alert('請檢查品名,大小,售價\n若未填寫的商品不會被儲存');
+	});
+
+	$('#suploadbutton').click(function(){
+		var whi=$('#suploadcon input:checked').val();
+		$('#'+whi+'file').upload("importstore.php", {fn:whi},function(fdata){$('#suploaddiv').html(fdata);});
+	});
+	$('#puploadbutton').click(function(){
+		var whi=$('#puploadcon input:checked').val();
+		$('#'+whi+'file').upload("importprod.php", {fn:whi},function(fdata){$('#puploaddiv').html(fdata);});
+	});
+	$('.OK').click(function(){
+		$('#tabsdiv .imgNO').hide();	
+		$('#tabsdiv .imgOK').show();	
+	});
+	$('.NO').click(function(){
+		$('#tabsdiv .imgOK').hide();	
+		$('#tabsdiv .imgNO').show();	
+	});
+	$('.ALL').click(function(){
+		$('#tabsdiv .imgOK').show();	
+		$('#tabsdiv .imgNO').show();	
+	});
+	$('#sidemenubtn img,#sidemenubtn a').click(function(){
+		var wh=$(this).attr('title');
+		
+		if(wh=="開啟選單")
+		{
+			$('#sidemenu').slideDown(500);
+			$(this).attr('title','隱藏選單');
+			$('#sidemenubtn img').attr('src','css/images/panel_tool_collapse.gif');
+		}
+		else
+		{
+			$('#sidemenu').fadeOut(2000);
+			$(this).attr('title','開啟選單');
+			$('#sidemenubtn img').attr('src','css/images/panel_tool_expand.gif');
+		}
+	});
+});
+function prompt1(msgty){
+	$.messager.prompt(msgty, '<font color="#ff0000">請輸入新類別的名稱</font>,資料送出後系統會將您的輸入儲存．但新增商品一次只能選一個類別,預設會勾選最後新增的類別喔!', function(newcate){
+		var sno=$('#thestores input:checked').val(); //the checked radio box
+		if(sno=="" || sno==undefined) {alert('請先選擇店家');return false;}
+		$.post("cateexist.php",{sno:sno,cname:newcate}, function(cnexist){
+			cnexist=parseInt(cnexist,10); //string to int
+			if(!cnexist) {
+				alert('此店家的商品中,已存在該類別');
+				return;
+			}
+			
+			var cs=$('#cnamestring').val().indexOf(newcate);
+			if(cs>=0) {
+				alert('這個類別,你剛剛才輸入'+$('#cnamestring').val());
+				return;
+			}
+			if (newcate){
+				var pdcnt=$('#idx').val();  
+				var NewIndex=parseInt(pdcnt,10)+1;  
+				$('#idx').val(NewIndex);
+				
+				$('#thecates input:radio').attr('checked',false);
+				var cath="<div id='DelCate'><input onclick='setcateaddlb(\""+newcate+"\")' type='radio' id='cno[]' name='cno[]' value='"+newcate+"' title='"+newcate+"' class='cno' checked /><label>"+newcate+"</label><img id='imgKill"+NewIndex+"' src='css/images/tree_dnd_no.png' title='刪除此項' alt='"+newcate+"'><div>";
+				
+				cath=cath.replace('DelCate','DelCate'+NewIndex);
+				$('#thecates').append(cath);
+				$('#imgKill'+NewIndex).attr('subindex',NewIndex).bind('click',DelCate);
+				$('#cnamestring').val("-"+newcate+$('#cnamestring').val());
+				setcateaddlb(newcate); //替代方案,無法取得動態產生cno
+			}
+		});
+		
+	});
+	$(".messager-input").focus();	
+}
+function prompt2(msgty){
+	
+	//one by one
+	var pdcon=$('#newProdCon').clone();  
+	var pdcnt=$('#idx').val();  
+	var NewIndex=parseInt(pdcnt,10)+1;  
+	$('#idx').val(NewIndex); 
+	
+	//修改subid 
+	var conh=pdcon.html().replace('EditZone','DelProd'+NewIndex).replace('imgDel','imgDel'+NewIndex);
+	$('#newProdZone').append(conh);
+	//加上click事件
+	$('#imgDel'+NewIndex).attr('subindex',NewIndex).bind('click',DelProd);
+	
+	
+	//one by many
+	/*$.messager.prompt(msgty, '請問您在本類別中,要新增幾個商品?<br><font color=\"#ff0000\">(請填入數量)</font>', function(newprod){
+		var k=0;
+		var npdc=parseInt(newprod,10); //input count
+		if (npdc){
+			var pdcon=$('#newProdCon').clone();  
+			//var pp=$('#newProdCon tr[subid="EditZone"]').clone();
+
+			while(k<npdc)
+			{
+				//取得DataZone的個數  
+				var pdcnt=$('#idx').val();  
+				var NewIndex=parseInt(pdcnt,10)+1;  
+				$('#idx').val(NewIndex); 
+				
+				//修改subid 
+				var conh=pdcon.html().replace('EditZone','DelProd'+NewIndex).replace('imgDel','imgDel'+NewIndex);
+				$('#newProdZone').append(conh);
+				//加上click事件
+				$('#imgDel'+NewIndex).attr('subindex',NewIndex).bind('click',DelProd);
+				k++;
+			}
+
+		}
+	});*/
+}
+
+function DelCate(){ 
+	var xidx=$(this).attr('subindex'); 
+	var xalt=$(this).attr('alt'); 
+	$('div[id="DelCate' + xidx + '"]').remove();
+	$('#cnamestring').val($('#cnamestring').val().replace(xalt,''));
+
+} 
+function DelProd(){ 
+	var xidx=$(this).attr('subindex');   
+	$('tr[subid="DelProd' + xidx + '"]').remove();
+} 
+function DelProd2(img){ 
+	$.messager.confirm('刪除商品', '確定從資料庫刪除?', function(r){
+		if (r){
+			var xidx=$(img).attr('subid');   
+			$('tr[subid="DelProd' + xidx + '"]').remove();
+			$.post("delprod.php",{pno:xidx},function(ret){if(ret==true) alert("刪除成功"); else alert("刪除失敗");})
+		}
+	});
+}
+function setcateaddlb(newcate)
+{
+	$('#cateaddlb').html(newcate);
+	//$('#addprodlist').html('<span style=\"font-size:12px;color:#ff0000;\">此類別還沒有相關的商品</span>');
+}
+
+function getthechk(the)
+{
+	theobj=the;
+	
+	//var divid=$(theobj).parent().get(0).subid; 
+	var divid=$(theobj).parent().attr('subid');
+	//var divheight=$('#'+divid).css('height');
+	//alert(divheight);
+	//var of=$(theobj).offset();
+	//$('#'+divid).show().offset({ top: of.top-18, left: of.left }).siblings().hide();
+	$('#'+divid).show().window('open');
+	$('#'+divid+' :text').focus();	
+	 //alert($(document).scrollTop());
+	 //alert($("<div class=\"window-mask\"></div>").css("height"));
+}
+
+</script>
+<style>
+#maindivleft{ position:absolute;background-color:#fff; width:302px; height:288px; margin-left:50%; left:-510px;}
+#maindivbtn{ position:absolute;background-color:#fff; width:458px; height:288px; margin-left:50%; left:-208px;}
+#maindivright{ position:absolute;background-color:#fff; width:260px; height:288px; margin-left:50%; left:250px; background-image:url(images/menu_rightbg.jpg); background-repeat:no-repeat;}
+#maindivbody{ position:absolute;background-color:#fff; width:1020px; height:auto; margin-left:50%; top:289px; left:-510px;}
+.newpdtd td,th{ border:solid 1px #999999;}
+#tabsdiv li{list-style:square; }
+</style>
+</head>
+
+<body><div id="maindivleft"><table width="302" border="0" cellspacing="0" cellpadding="0">
+    <tr><td><img src="images/main_1.jpg" width="302" height="127" alt="" /></td></tr>
+    <tr><td><img src="images/main_4.jpg" width="302" height="161" alt="" /></td></tr></table></div>
+<div id="maindivbtn">
+<div style="background-image:url(images/main_menubg.jpg); background-repeat:no-repeat; width:458px; height:288px;">
+<div id="odlbtndiv2" class="odlbtn"><img src="images/odlbtn_on.gif" /></div>
+<div id="cpnbtndiv2" class="cpnbtn"><!--img src="images/cpnbtn_on.gif" /--></div>
+<div id="grlbtndiv2" class="grlbtn"><!--img src="images/grlbtn_on.gif" /--></div>
+<div id="ordbtndiv2" class="ordbtn"><img src="images/ordbtn_on.gif" /></div>
+<div id="bplbtndiv2" class="bplbtn"><!--img src="images/bplbtn_on.gif" /--></div>
+<div id="gbbbtndiv2" class="gbbbtn"><!--img src="images/gbbbtn_on.gif" /--></div>
+<div id="membtndiv2" class="membtn"><img src="images/membtn_on.gif" /></div>
+<div id="msgdiv"></div>
+  </div></div>
+<div id="maindivright">
+  <div style="padding-top:10px;font-size:12px;color:#0000ff;font-weight:bold; cursor:pointer;" id="sidemenubtn" title="開啟選單"><img title="開啟選單" src="css/images/panel_tool_expand.gif" /><a href="javascript:void(0)" title="開啟選單">功能選單</a></div><div style="background-image:url(images/sidemenubg.gif); background-repeat:no-repeat;display:none;" id="sidemenu"><div style="padding-top:55px;"></div><div style="width:260px; height:260px; font-size:12px;padding-left:50px; line-height:16px" id="olinkdiv2"></div></div></div>
+<div id="maindivbody">
+  <table width="1020" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="3"><img src="images/main_9.gif" width="1020" height="13" /></td>
+    </tr>
+    <tr>
+      <td width="17" valign="top" background="images/main_13.gif"><img src="images/main_10.gif" width="17" height="104" /></td>
+      <td width="985" align="center"><div style="text-align:left;"><img src="images/title_prod.gif" width="432" height="44" alt="" /></div><form action="addeditprodchk.php" method="post" enctype="multipart/form-data" name="form1" id="form1">
+<div id="tabsdiv" style="width:930px;height:auto; padding-left:10px;">
+<div title="步驟1.選擇/搜尋店家" style="padding:20px;"><div style="text-align:center; padding-bottom:10px; "><input type="text" id="searchtxt" name="searchtxt" style="width:200px" /> <input type="button" id="searchbtn" name="searchbtn" style="width:60px" value="搜尋店家" /><input type="hidden" id="poty" value="pd" /><br />(您可以輸入任意的關鍵字,如:店名、店家類型、送達地區、電話、地址、店家簡介等)</div><div id="thestores"></div></div>
+<div title="步驟2.編輯/添加類別" style="padding:10px;"><div style="text-align:left; font-size:11px;color:#999999;"><ul style="list-style:inside"><li>請選擇要新增商品的類別</li><li>商品建立者可以點類別名稱編輯，或點 <span style="color:#F00;font-size:12px; font-weight:bold;">X</span> 刪除類別</li><li>
+若要新增的商品不在下列表中，可以選擇<span style="color:#060;font-size:14px; font-weight:bold;">+</span>新增</li></ul></div><div id="thecates" style="padding:10px;text-align:left;"></div><div id="addcatediv" style="text-align:left;"><a href="javascript:void(0);" onclick="prompt1('新增商品類別')"><img src="css/icons/edit_add.png" /> 新增商品類別(系列)</a></div></div>
+<div id="addpddata" title="步驟3.編輯/添加商品" style="padding:20px;"><div style="text-align:left; font-size:11px;color:#999999;"><ul style="list-style:inside"><li>請輸入並選擇您的商品名稱及該商品的相關資料</li><li>若欄位不足，可以自行點選<span style="color:#060;font-size:14px; font-weight:bold;">+</span>新增</li></ul></div><p style="text-align:left; color:#060;"><img src="css/images/tree_checkbox_2.gif" />類別:<label id="cateaddlb"></label> <img src="css/images/tree_checkbox_2.gif" /><a title="pdl" href="javascript:void(0);">此類別現有商品</a></p><div id="addprodlist" style="display:none;"></div><div style="display:none;"><table><tbody id="newProdCon"><tr subid="EditZone"><td><img id="imgDel" src="css/images/tree_dnd_no.png" alt="刪除此項"></td> 
+<td><input type="hidden" id="pno[]" name="pno[]" value="0" /><input type="text" id="pname[]" name="pname[]" title="商品的名稱" /></td>
+<td subid='sp'><input type="text" id="psize[]" name="psize[]" style="width:50px;" title="此商品有哪些大小規格" onclick="getthechk(this);" readonly="readonly" /></td>
+<td subid='pp'><input type="text" id="pprice[]" name="pprice[]" style="width:40px;" title="商品售價依大小不同時,請用減號分隔" onclick="getthechk(this);" readonly="readonly" /></td>
+<td subid='tp'><input type="text" id="ptemp[]" name="ptemp[]" style="width:50px;" title="此商品有哪些冷熱溫度" onclick="getthechk(this);" readonly="readonly" /></td>
+<td subid='ep'><input type="text" id="ptaste[]" name="ptaste[]" style="width:50px;" title="此商品有哪些鹹淡口味" onclick="getthechk(this);" readonly="readonly" /></td>
+<td><input type="file" id="ppic[]" name="ppic[]" style="width:190px;" title="上傳此商品的圖片" /></td>
+<td><input type="text" id="pintro[]" name="pintro[]" style="width:150px;" title="此商品的簡介" /></td>
+<td><input type="text" id="psuit[]" name="psuit[]" style="width:130px;" title="此商品是否有特殊功效" /></td></tr></tbody></table></div>
+<div id="addproditem"><table border="0" cellspacing="1" cellpadding="1" width="99%" ><thead class="newpdtd"><tr><th>刪除</th><th>品名</th><th>單位</th><th>售價</th><th>冷熱</th><th>甜淡</th><th>圖片上傳</th><th>商品說明</th><th>特殊功效</th></tr></thead><tbody id="newProdZone"><tr><td>例:</td> 
+<td><input type="text" value="QQ起司咖啡" title="商品的名稱" disabled="disabled" /></td>
+<td subid='sp'><input type="text" value="大-中" title="此商品有哪些大小規格" disabled="disabled" style="width:50px;" /></td>
+<td subid='pp'><input type="text" value="35-30" title="商品售價" disabled="disabled" style="width:30px;" /></td>
+<td subid='tp'><input type="text" value="少冰-溫的-熱的" title="此商品有哪些冷熱溫度"  disabled="disabled" style="width:50px;" /></td>
+<td subid='ep'><input type="text" value="3分-5分-全糖" title="此商品有哪些鹹淡口味" disabled="disabled" style="width:50px;" /></td>
+<td><input type="text" value="qcafe.jpg" title="上傳此商品的圖片" disabled="disabled" style="width:190px;" /></td>
+<td><input type="text" value="含非洲天然石頭綠藻果粒" title="此商品的簡介" disabled="disabled" style="width:150px;" /></td>
+<td><input type="text" value="增加體力,頭腦清晰" title="此商品是否有特殊功效" disabled="disabled" style="width:140px;" /></td></tr></tbody></table></div>
+<div id="addbtndiv" style="text-align:left; padding-top:10px;"><a href="javascript:void(0);" onclick="prompt2('新增商品項目')"><img src="css/icons/edit_add.png" /> 新增商品項目</a><input type="hidden" id="idx" name="idx" value="0" /></div></div>
+<div id="previewtab" title="步驟4.預覽並確定儲存" style="padding:20px;"></div>
+<div title="*商品檔案大量上傳*" style="padding:20px;"><div style="text-align:left; font-size:11px;color:#999999;"><ul style="list-style:inside">
+  <li>上傳各店家、類別、商品功能是獨立的，故必須按各自的傳送按鍵才可上傳</li><li>上傳前，請先維護店家資料，若店家不存在，請新增店家。</li><li>請選擇要上傳店家、類別、商品的頁簽</li><li>第一列視為標頭列head，程式將skip掉。</li><li>請注意您上傳的資料是否有重覆。 </li><li>請確認商店名稱、類別名稱、商品名稱等與已存在的資料一致，不同字元視為不同項目。</li></ul></div><div id="importtabs" class="easyui-tabs"  style=" height:auto;">
+<div title="大量上傳商品項目" style="padding:10px;"><div style="text-align:left;padding:10px; font-size:11px;color:#999999;"><ul style="list-style:inside"><li>請選擇要上傳新商品的檔案格式</li><li>上傳的商品若已存在時，該商品將不會更新</li><li>滑鼠移至<img src='css/images/tree_dnd_no.png' />可查看該行的問題</li>
+				<li>下載<font color="#FF0000">商品</font>範例格式檔案 [<a href="sample/uploadprod.xls">.XLS</a>] [<a href="sample/uploadprod.xlsx">.XLSX</a>] [<a href="sample/uploadprod.csv">.CSV</a>]</li></ul></div><div id="puploadcon" style="text-align:left; width:80%;"><input type="radio" name="pexcel" value="pexcel5" id="pexcelxls" /><label for="pexcel5file"> Excel 97~2003 (.xls) 格式上傳&nbsp;&nbsp;</label><input type="file" id="pexcel5file" name="pexcel5file" style="width:400px;" title="上傳Excel 97~2003格式" onchange="document.all.pexcelxls.checked=true;if(!/^.*(.xls)$/.test(this.value)){alert('此處上傳只允許.xls 格式')}" /><br /><input type="radio" name="pexcel" id="pexcel2007" value="pexcel2007" /><label for="pexcel2007file"> Excel 2007 (.xlsx) 格式上傳&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="file" id="pexcel2007file" name="pexcel2007file" style="width:400px;" title="上傳Excel 2007格式" onchange="document.all.pexcel2007.checked=true;if(!/^.*(.xlsx)$/.test(this.value)){alert('此處上傳只允許.xlsx 格式')}" /><br /><input type="radio" name="pexcel" value="pexcelcsv" id="pexcelcsv" /><label for="pexcelcsv"> Excel 逗號分隔 (.csv) 格式上傳 </label><input type="file" id="pexcelcsvfile" name="pexcelcsvfile" style="width:400px;" title="上傳Excel CSV格式" onchange="document.all.pexcelcsv.checked=true;if(!/^.*(.csv)$/.test(this.value)){alert('此處上傳只允許.csv 格式')}" /></div><p><input type='button' name='puploadbutton' id='puploadbutton' value='開始上傳商品' style='height:30pt; width:100pt; background-color:#6F0; color:#060;' /></p><div style="text-align:left;"><img src="css/images/tree_file.gif" />上傳結果將顯示於下方:<input type="radio" name="OKNO" class="OK" /><img src='css/images/tree_dnd_yes.png' /><input type="radio" name="OKNO" class="NO" /><img src='css/images/tree_dnd_no.png' /><input type="radio" name="OKNO" class="ALL" checked="true" />顯示全部</div><div id="puploaddiv"></div></div> 
+
+<div title="大量上傳店家資料" style="padding:10px;"><div style="text-align:left;padding:10px; font-size:11px;color:#999999;"><ul style="list-style:inside"><li>請選擇要上傳新店家的檔案格式</li><li>滑鼠移至<img src='css/images/tree_dnd_no.png' />可查看該行的問題</li>
+				<li>下載<font color="#FF0000">店家</font>範例格式檔案 [<a href="sample/uploadstore.xls">.XLS</a>] [<a href="sample/uploadstore.xlsx">.XLSX</a>] [<a href="sample/uploadstore.csv">.CSV</a>]</li></ul></div><div id="suploadcon" style="text-align:left; width:80%;"><input type="radio" name="sexcel" value="sexcel5" id="sexcelxls" /><label for="sexcel5file"> Excel 97~2003 (.xls) 格式上傳&nbsp;&nbsp;</label><input type="file" id="sexcel5file" name="sexcel5file" style="width:400px;" title="上傳Excel 97~2003格式" onchange="document.all.sexcelxls.checked=true;if(!/^.*(.xls)$/.test(this.value)){alert('此處上傳只允許.xls 格式')}" /><br /><input type="radio" name="sexcel" id="sexcel2007" value="sexcel2007" /><label for="sexcel2007file"> Excel 2007 (.xlsx) 格式上傳&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="file" id="sexcel2007file" name="sexcel2007file" style="width:400px;" title="上傳Excel 2007格式" onchange="document.all.sexcel2007.checked=true;if(!/^.*(.xlsx)$/.test(this.value)){alert('此處上傳只允許.xlsx 格式')}" /><br /><input type="radio" name="sexcel" value="sexcelcsv" id="sexcelcsv" /><label for="sexcelcsv"> Excel 逗號分隔 (.csv) 格式上傳 </label><input type="file" id="sexcelcsvfile" name="sexcelcsvfile" style="width:400px;" title="上傳Excel CSV格式" onchange="document.all.sexcelcsv.checked=true;if(!/^.*(.csv)$/.test(this.value)){alert('此處上傳只允許.csv 格式')}" /></div><p><input type='button' name='suploadbutton' id='suploadbutton' value='開始上傳店家' style='height:30pt; width:100pt;background-color:#C33; color:#FCF;' /></p><div style="text-align:left;"><img src="css/images/tree_file.gif" />上傳結果將顯示於下方:<input type="radio" name="OKNO" class="OK" /><img src='css/images/tree_dnd_yes.png' /><input type="radio" name="OKNO" class="NO" /><img src='css/images/tree_dnd_no.png' /><input type="radio" name="OKNO" class="ALL" checked="true" />顯示全部</div><div id="suploaddiv"></div></div>
+</div>
+			</div>
+</div>    
+  
+</form></td>
+      <td width="18" valign="top" background="images/main_14.gif"><img src="images/main_12.gif" width="18" height="104" /></td>
+    </tr>
+    <tr>
+      <td colspan="3"><img src="images/main_15.gif" width="1020" height="16" /></td>
+    </tr>
+  </table>
+</div><div id="ppmenu">
+	<div id="pp" class="easyui-window" closed="true" modal="true" title="設定售價" style="text-align:center;display:none; background-color:#eee;border:solid 1px #999; width:310px; height:170px; font-size:12px;">
+		<p style='text-align:left; padding:5px;'>商品的售價常會因容量、體積、重量等大小而不同，<br />此時請用 - 減號將物品的售價區隔。例: 35-40-50 <br /></p>
+        <span>自訂:</span><input type="text" style='width:220px' title="售價要與您在「大小」欄位的個數相同;請用減號-隔開">
+        <p><a class="easyui-linkbutton" iconCls="icon-ok" href="javascript:void(0)">確定</a><a class="easyui-linkbutton" iconCls="icon-cancel" href="javascript:void(0)">取消</a></p>
+
+	</div>
+	<div id="sp" class="easyui-window" closed="true" modal="true" title="設定大小" style="text-align:center;display:none; background-color:#eee;border:solid 1px #999; width:178px; height:160px; font-size:12px;">
+     	<input type="checkbox" value="小"><span>小</span>
+        <input type="checkbox" value="中"><span>中</span>
+        <input type="checkbox" value="大"><span>大</span>
+        <input type="checkbox" value="特大"><span>特大</span><br />
+        <input type="checkbox" value="特大-大-中-小"><span>以上全選</span><br /><br />
+        <span>自訂:</span><input type="text" style='width:120px' title="可以自訂大小容量;請用減號-隔開">
+        <p><a class="easyui-linkbutton" iconCls="icon-ok" href="javascript:void(0)">確定</a><a class="easyui-linkbutton" iconCls="icon-cancel" href="javascript:void(0)">取消</a></p>
+
+	</div>
+    <div id="tp" class="easyui-window" closed="true" modal="true" title="設定冷熱" style="text-align:center;display:none; background-color:#eee;border:solid 1px #999; width:268px; height:160px; font-size:12px;">
+        <input type="checkbox" value="正常"><span>正常</span>
+        <input type="checkbox" value="少冰"><span>少冰</span>
+        <input type="checkbox" value="去冰"><span>去冰</span>
+        <input type="checkbox" value="溫的"><span>溫的</span>
+        <input type="checkbox" value="熱的"><span>熱的</span><br />
+        <input type="checkbox" value="正常-少冰-去冰-溫的-熱的"><span>以上全選</span><br /><br />
+        <span>自訂:</span><input type="text" style='width:120px' title="可以自訂冷熱程度;請用減號-隔開">
+        <p><a class="easyui-linkbutton" iconCls="icon-ok" href="javascript:void(0)">確定</a><a class="easyui-linkbutton" iconCls="icon-cancel" href="javascript:void(0)">取消</a></p>
+	</div>
+    <div id="ep" class="easyui-window" closed="true" modal="true" title="設定甜淡" style="text-align:center;display:none; background-color:#eee;border:solid 1px #999; width:268px; height:210px; font-size:12px;">
+    	<input type="checkbox" value="無糖"><span>無糖</span>
+        <input type="checkbox" value="3分"><span>3分</span>
+        <input type="checkbox" value="5分"><span>5分</span>
+        <input type="checkbox" value="7分"><span>7分</span>
+        <input type="checkbox" value="全糖"><span>全糖</span><br />
+        <input type="checkbox" value="無糖-3分-5分-7分-全糖"><span>以上全選</span><br /><br />
+        <input type="checkbox" value="大辣"><span>大辣</span>
+        <input type="checkbox" value="中辣"><span>中辣</span>
+        <input type="checkbox" value="小辣"><span>小辣</span><br />
+        <input type="checkbox" value="大辣-中辣-小辣"><span>以上全選</span><br /><br />
+       
+        <span>自訂:</span><input type="text" style='width:120px' title="可以自訂甜淡口味;請用減號-隔開">
+        <p><a class="easyui-linkbutton" iconCls="icon-ok" href="javascript:void(0)">確定</a><a class="easyui-linkbutton" iconCls="icon-cancel" href="javascript:void(0)">取消</a></p>
+	</div></div>
+</body>
+</html>

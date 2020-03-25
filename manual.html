@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TeaTime 茶飲訂購系統 操作手冊</title>
+<link href="css/common.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="js/jquery.cookie.js" type="text/javascript"></script>
+<script src="js/common.js" type="text/javascript"></script>
+<style>
+.profiletb td{ border:solid 1px #999999;}
+.vertext{text-align:left;}
+</style>
+</head>
+<body>
+<div id="topdiv"><div style="width:385px;"><img src="images/version_03.jpg" width="385" height="220" alt=""></div><div style="width:385px;  position:relative; left:385px; top:-220px;"><img src="images/version_04.jpg" width="385" height="220" alt=""></div></div>
+<div id="leftdiv"><div style="width:50px; height:149px; "><img src="images/sub01_01.jpg" width="250" height="149" id="getT" /></div>
+<div id="newsdiv"><img src="images/title_version.gif" width="432" height="44" alt="" /></div>
+<div id="rightdiv">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="47" valign="top" background="images/sub01_19.gif"><img src="images/sub01_07-08.gif" width="47" height="28" alt="" /></td>
+      <td valign="top" style="background-image:url(images/sub01_09.gif); background-position:top;">&nbsp;</td>
+      <td width="24" height="28" valign="top" background="images/sub01_14.gif"><img src="images/sub01_10.gif" width="24" height="28" alt="" /></td>
+    </tr>
+    <tr>
+      <td valign="top" background="images/sub01_19.gif"><img src="images/sub01_09-13.gif" width="47" height="121" alt="" /></td>
+      <td align="center" valign="top">
+  <table border="0px" style="font-size:12px" width="630px" class="profiletb">
+  <tr bgcolor="#999999"> 
+    <th width="100">功能</th>
+    <th>說明 (v1.0)</th>
+    </tr>
+     <tr>
+       <td>前言</td>
+       <td class="vertext">這是一個開放式的訂購平台，由廣大的用戶互相合作維護資料，以期讓資料能即時更新，讓資料更豐富。<br />
+         為減少使用者在網路上註冊的麻煩，本系統採密碼方式登入訂購菜單，只要輸入系統提供的密碼就能夠自由的訂購商品、修改訂購資訊。 範例密碼:<span style="color:#F0F">634ef3d0a07bf9cb8994124c0b1d2aa1</span><br /></td>
+     </tr>
+     <tr>
+       <td>基本操作流程</td>
+       <td class="vertext"><span style="color:#00F">1.使用者不需要帳號，只要擁有「訂單密碼」就能使用。</span><br />
+2.「訂單密碼」在邀約發起人建立訂單後，由系統提供，並發送到邀約者信箱。<br />
+3.只有註冊會員才有權限可以建立訂單。<br />
+4.訂單依據特性可以分為單次或週期性來進行邀約。<br />
+<span style="color:#F00"> 5.若系統內沒有要發起的店家，發起人必需首次維護建立相關店家及其商品。</span><br />
+6.店家及其商品可由「店家維護」或「商品維護」線上逐筆輸入或是批次上傳。<br />
+7.訂單建立後，由發起人自行將網址及密碼寄送給訂購團員。<br />
+8.「會員專區」提供發起人修改訂單。<br />
+9.下單時，請注意商品選項，輸入訂購數量，也可以複選。<br />
+10.下單後，在邀約結束前，下訂者與發起人可以在「檢視訂單」隨時更改訂購資訊。<br />
+11.邀約結束後，系統會結算並寄發訂單表格給邀約發起人。</td>
+     </tr>
+     <tr>
+       <td>會員註冊</td>
+       <td class="vertext">會員註冊後才有更多權限，以便發起邀約、新增修改店家及其商品。</td>
+     </tr>
+     <tr>
+       <td>店家建立</td>
+       <td class="vertext">平台開放，任何註冊會員都可以新增、修改店家資料。</td>
+     </tr>
+     <tr>
+       <td>商品維護</td>
+       <td class="vertext">平台開放，任何註冊會員都可以新增、修改商品資料。</td>
+     </tr>
+     <tr>
+       <td>發起邀約</td>
+       <td class="vertext">選擇欲發起的店家--&gt;選擇本次下訂的商品--&gt;填寫邀約單內容，送出邀約。<br />
+         發起人可以至「會員專區」修改未過期的邀約訂單。</td>
+     </tr>
+     <tr>
+       <td>我的邀約</td>
+       <td class="vertext">您發起過的邀約都會被記錄在系統中，提供您回顧及審視。</td>
+     </tr>
+     <tr>
+       <td>訂購記錄</td>
+       <td class="vertext">您訂購過的商品會依據商品與店家來分類，提供您回顧及審視。</td>
+     </tr>
+     <tr>
+       <td>其它</td>
+       <td class="vertext">1.您可以自行建立「虛擬店家」，建立不同店家的名稱為分類，一次進行多樣化的商品邀約。<br />
+         範例密碼:<span style="color:#F0F">e92d082f89c0ec7cf09798097126b29d</span><br />
+         2.某些頁面的功起選項在右上方的「功能選單」中。<br />
+         3.發起人可以隨時下載目前的訂購狀態，請於「檢視訂單」中，點「下載本訂單」。<br />
+         4.
+         某些功能暫不開放。</td>
+     </tr>
+  </table></td>
+      <td background="images/sub01_14.gif">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="47" height="21" valign="bottom" background="images/sub01_19.gif"><img src="images/sub01_22.gif" width="47" height="21" alt="" /></td>
+      <td valign="bottom" background="images/sub01_24.gif">&nbsp;</td>
+      <td width="24" height="21" valign="bottom" background="images/sub01_14.gif"><img src="images/sub01_25.gif" width="24" height="21" alt="" /></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
